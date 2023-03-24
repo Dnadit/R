@@ -1,6 +1,6 @@
 # ch07 homework(2,3,4번 문제) ============================
 getwd()
-# setwd("D:/works/data")
+setwd("D:/works/data")
 dataset <- read.csv("dataset.csv", header = T)
 dataset2 <- subset(dataset, price >= 2 & price <= 8)
 dataset2
@@ -26,6 +26,7 @@ dataset2[c('age1', 'age2', 'age3')]
 # ch08 homework(1, 2번 문제) ============================
 install.packages("lattice")
 library("lattice")
+??equal.count
 # 1번 문제
 data("quakes")
 head(quakes)
