@@ -81,12 +81,12 @@ summary(g3)
 idist <- dist(iris[1:4])
 hc <- hclust(idist)
 plot(hc, hang = -1)
-
+rect.hclust(hc, k = 3, border = "red")
 # 단계 2: 군집 수 자르기 
 ghc <- cutree(hc, k = 3)
 ghc
 
-# 단계 3: iris 데이터 셋에 ghc 칼러 ㅁ추가 
+# 단계 3: iris 데이터 셋에 ghc 칼럼 추가 
 iris$ghc <- ghc
 table(iris$ghc)
 head(iris)
@@ -153,11 +153,10 @@ install.packages("arules")
 library(arules)
 
 # 단계 2: 트랜잭션 객체 생성
-setwd("C:/Rwork/Part-IV")
-tran <- read.transactions("tran.txt", format = "basket", sep = ",")
+tran <- read.transactions("./data/tran.txt", format = "basket", sep = ",")
 tran
 
-
+?read.transactions
 # 단계 3: 트랜잭션 데이터 보기 
 inspect(tran)
 
@@ -169,16 +168,17 @@ inspect(rule)
 rule <- apriori(tran, parameter = list(supp = 0.1, conf = 0.1))
 inspect(rule)
 
+rule <- apriori(tran, parameter = list(supp = 0, conf = 0.1))
+inspect(rule)
+
 
 # 실습: single 트랜잭션 객체 생성
-setwd("C:/Rwork/Part-IV")
-stran <- read.transactions("demo_single", format = "single", cols = c(1, 2))
+stran <- read.transactions("./data/demo_single", format = "single", cols = c(1, 2))
 inspect(stran)
 
 # 실습: 중복 트랜잭션 제거 
 # 단계 1: 트랜잭션 데이터 가져오기 
-setwd("C:/Rwork/Part-IV")
-stran2 <- read.transactions("single_format.csv", format = "single",
+stran2 <- read.transactions("./data/single_format.csv", format = "single",
                              sep = ",", cols = c(1, 2), rm.duplicates = T)
 
 # 단계 2: 트랜잭선과 상품수 확인
@@ -186,6 +186,7 @@ stran2
 
 # 단계 3: 요약 통계량 제공
 summary(stran2)
+inspect(head(stran2))
 
 
 # 실습: 규칙 발견(생성)
@@ -201,15 +202,14 @@ inspect(head(sort(astran2, by = "lift")))
 
 
 # 실습: basket 형식으로 트랜잭션 객체 생성
-setwd("C:/Rwork/Part-IV")
-btran <- read.transactions("demo_basket", format = "basket", sep = ",")
+btran <- read.transactions("./data/demo_basket", format = "basket", sep = ",")
 inspect(btran)
 
 
 # 실습: Adult 데이터 셋 가져오기 
 data(Adult)
 Adult
-
+inspect(head(Adult))
 
 # 실습: AdultUCI 데이터 셋 보기 
 data("AdultUCI")
@@ -221,7 +221,7 @@ str(AdultUCI)
 adult <- as(Adult, "data.frame")
 str(adult)
 head(adult)
-
+View(adult)
 # 단계 2: 오약 통계량
 summary(Adult)
 
@@ -265,8 +265,8 @@ install.packages("arulesViz")
 library(arulesViz)
 
 # 단계 2: 연관규칙 시각화
-plot(ar3, method = "graph", control = list(type = "items"))
-
+plot(ar5, method = "graph", control = list(type = "items"), engine = "htmlwidget")
+??plot()
 
 # 실습: Groceries 데이터 셋으로 연관분석 하기 
 # 단계 1: Groceries 데이터 셋 가져오기 
@@ -298,7 +298,7 @@ inspect(rules)
 
 # 실습: 발견된 규칙 시각화 
 library(arulesViz)
-plot(rules, method = "graph")
+plot(rules, method = "graph", engine = "htmlwidget")
 
 
 
@@ -308,22 +308,23 @@ wmilk <- subset(rules, rhs %in% 'whole milk')
 wmilk
 
 inspect(wmilk)
-plot(wmilk, method = "graph")
+plot(wmilk, method = "graph", engine = "htmlwidget")
 
 # 단계 2: 오른쪽 item이 other vegetables인 규칙만 서브 셋으로 작성
 oveg <- subset(rules, rhs %in% 'other vegetables')
 oveg
 inspect(oveg)
-plot(oveg, method = "graph")
+plot(oveg, method = "graph", engine = "htmlwidget")
 
 
 # 단계 3: 오른쪽 item이 vegetables 단어가 포함된 규칙만 서브 셋으로 작성
-oveg <- subset(rules, rhs %in% 'vegetables')
-
+oveg <- subset(rules, lhs %in% 'yogurt')
 oveg
 inspect(oveg)
+plot(oveg, method = "graph", engine = "htmlwidget")
 
 # 단계 4: 왼쪽 item이 butter 또는 yogurt인 규칙만 서브 셋으로 작성
 butter_yogurt <- subset(rules, lhs %in% c('butter', 'yogurt'))
 butter_yogurt
 inspect(butter_yogurt)
+plot(butter_yogurt, method = "graph", engine = "htmlwidget")
